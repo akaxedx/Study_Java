@@ -62,10 +62,10 @@ public class ByteStreamDemo {
         //1.创建对象
         //写出 输出流 OutputStream
         //本地操作 File
-        FileOutputStream fos = new 
         //没有新建文件会自己创建，但父级路径必须存在
         //文件如果存在会清空文件
-        FileOutputStream("D:\\code\\JavaLearn\\a.txt");
+        FileOutputStream fos = new  FileOutputStream("D:\\code\\JavaLearn\\a.txt");
+
         //2.写出数据
         //对应ASCII码，想要写入数字需要使用对应数字的ASCII码
         fos.write(97);
@@ -86,7 +86,7 @@ import java.io.IOException;
 public class ByteStreamDemo {
     public static void main(String[] args) throws IOException {
         //创建对象
-        FileOutputStream fos = new 					                  			FileOutputStream("D:\\code\\JavaLearn\\a.txt");
+        FileOutputStream fos = new FileOutputStream("D:\\code\\JavaLearn\\a.txt");
         byte[] bytes = {97,98,99,100,101};
         fos.write(bytes);
         fos.close();
@@ -156,7 +156,7 @@ import java.io.IOException;
 public class ByteStreamDemo {
     public static void main(String[] args) throws IOException {
         //创建对象
-        FileOutputStream fos = new  		   	 			     	 	 	 	 FileOutputStream("D:\\code\\JavaLearn\\a.txt",true);
+        FileOutputStream fos = new  FileOutputStream("D:\\code\\JavaLearn\\a.txt",true);
         fos.write(87);
     }
 }
