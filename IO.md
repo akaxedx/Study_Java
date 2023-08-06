@@ -212,8 +212,239 @@ public class ByteStreamDemo {
     }
 }
 ```
+一次读取一个字节，读到末尾方法返回-1
+
+循环读取
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileInputStream fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+
+        //循环读取
+        int b;
+        while ((b = fis.read()) != -1){
+            System.out.print((char)b);
+        }
+        fis.close();
+
+    }
+}
+//每调用一次read指针向后移动一位
+```
+#### 文件拷贝
+
+小文件
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileInputStream fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+        FileOutputStream fos = new FileOutputStream("src\\copya.txt");
+
+        //拷贝,视频也行
+        int b;
+        while ((b = fis.read()) != -1){
+            fos.write(b);
+        }
+        //先开的流最后关闭
+        fos.close();
+        fis.close();
+    }
+}
+
+```
+
+大文件
+
+FileInputStream一次读写一个字节
+
+速度太慢
+
+创建字节数组进行多个字节数据读写
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileInputStream fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+
+        byte[] bytes = new byte[10];
+        int len1 = fis.read(bytes);//返回读到的数据个数
+        System.out.println(len1);//10
+        String str1 = new String(bytes);
+        System.out.println(str1);//abcdefghij
+
+        int len2 = fis.read(bytes);//返回读到的数据个数
+        System.out.println(len2);//4
+        String str2 = new String(bytes);
+        System.out.println(str2);//klmnefghij
+
+        int len3 = fis.read(bytes);//返回读到的数据个数
+        System.out.println(len3);//-1
+        String str3 = new String(bytes);
+        System.out.println(str3);//klmnefghij
+
+        fis.close();
+
+    }
+}
+//有点问题，可以通过String格式优化
+
+```
+优化代码
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileInputStream fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+
+        byte[] bytes = new byte[10];
+        int len1 = fis.read(bytes);//返回读到的数据个数
+        System.out.println(len1);//10
+        String str1 = new String(bytes,0,len1);
+        System.out.println(str1);//abcdefghij
+
+        int len2 = fis.read(bytes);//返回读到的数据个数
+        System.out.println(len2);//4
+        String str2 = new String(bytes,0,len2);
+        System.out.println(str2);//klmn
+        
+        fis.close();
+
+    }
+}
+
+```
+
+改写文件拷贝
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+
+        long start = System.currentTimeMillis();
+
+        FileInputStream fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+        FileOutputStream fos = new FileOutputStream("src\\copya.txt");
+
+        int len;
+        byte[] bytes = new byte[1024*1024*5];
+        while ((len = fis.read(bytes))!=-1){
+            fos.write(bytes,0,len);
+        }
+        fos.close();
+        fis.close();
+
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
+    }
+}
+
+```
+
+异常处理必须掌握
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
 
 
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+        try {
+           fis = new FileInputStream("D:\\code\\JavaLearn\\a.txt");
+            fos = new FileOutputStream("src\\copya.txt");
+
+            int len;
+            byte[] bytes = new byte[1024*1024*5];
+            while ((len = fis.read(bytes))!=-1){
+                fos.write(bytes,0,len);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if(fos != null){
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(fis != null){
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+}
+
+```
+
+简化方案
+
+通过AutoCloseable接口在特定情况下释放资源
+
+jdk7写法，不必掌握
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        try(FileInputStream fis = new FileInputStream("src\\a.txt");
+            FileOutputStream fos = new FileOutputStream("src\\copya.txt");) {
+            int len;
+            byte[] bytes = new byte[1024*1024*5];
+            while ((len = fis.read(bytes))!=-1){
+                fos.write(bytes,0,len);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+
+jdk9写法
+
+自己了解，不必掌握
 
 ### 字符流
 
