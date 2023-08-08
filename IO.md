@@ -446,9 +446,180 @@ jdk9写法
 
 自己了解，不必掌握
 
+### 字符集
+
+#### ASCII
+
+128个数据
+
+最大数字是127，最小是0
+
+计算机存储英文只需要一个字节，8位二进制，补零
+
+#### GB2312字符集
+
+6763个简体汉字
+
+#### BIG5字符集
+
+台湾发布的繁体
+
+#### GBK 字符集
+
+集合了中日韩
+windows默认GBK，系统显示ANSI
+
+#### Unicode字符集
+
+国际标准字符集，任何语言
+
+#### GBK存储的规则
+
+完全兼容ASCII
+
+汉字使用两个字节存储
+
+10111010 10111010
+
+高位字节二进制一定以1开头，转成10进制为负数
+
+原因是为了区分中英文的区别
+
+#### Unicode 万国码存储规则
+
+兼容ASCII
+
+##### UTF-16编码规则
+
+a -> 00000000 01100001
+
+##### UTF-32编码规则
+
+a -> 00000000 00000000 00000000 01100001
+
+##### *UTF-8编码规则*
+
+ASCII 1字节
+
+叙利亚。。。 2个字节
+
+中日韩。。。 3个字节
+
+0xxxxxxx
+
+110xxxxx 10xxxxxx
+
+1110xxxx 10xxxxxx 10xxxxxx
+
+11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+
 ### 字符流
 
-Reader（抽象类）
+字节流一次只读取一个字节，所以读取中文或其他文字会有乱码
 
-Writer（抽象类）
+编码和解码方式不同意也会导致乱码
+
+所以文本文件不要使用字节流
+
+```java
+package org.example;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        //编码
+        String str = "c你";
+        byte[] bytes1 = str.getBytes();//utf-8
+        System.out.println(Arrays.toString(bytes1));//4个字节
+
+        byte[] bytes2 = str.getBytes("GBK");//GBK
+        System.out.println(Arrays.toString(bytes2));//3个字节
+
+        //解码
+
+        String str2 =new String(bytes1);//utf-8
+        System.out.println(str2);//c你
+        String str3 =new String(bytes1,"GBK");
+        System.out.println(str3);//c浣？
+    }
+}
+
+```
+
+#### 字符流 = 字节流 + 字符流
+
+空参read
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileReader fr =new FileReader("src\\copya.txt");
+
+        int ch;
+        while((ch = fr.read()) != -1){
+            System.out.print((char)ch);
+        }
+        //read(): 在读取之后在读取之后会转换成十进制数字
+        //将十进制数字进行强转为char
+        fr.close();
+    }
+}
+
+```
+
+有参read
+
+```java
+package org.example;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileReader fr =new FileReader("src\\copya.txt");
+
+        char[] chars = new char[2];
+        int len;
+        while ((len = fr.read(chars)) != -1){
+            System.out.print(new String(chars,0,len));
+        }
+
+        fr.close();
+    }
+}
+
+```
+
+写
+
+```java
+package org.example;
+import java.io.*;
+import java.util.Arrays;
+
+public class ByteStreamDemo {
+    public static void main(String[] args) throws IOException {
+        FileWriter fw = new FileWriter("src\\a.txt");
+
+        //fw.write(25105);
+
+        fw.write("我靠？？？");
+
+        fw.close();
+    }
+}
+
+```
+
 
