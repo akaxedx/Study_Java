@@ -694,6 +694,7 @@ public class MyException extends Exception{
 }
 ```
 
+
 ```java
 public class Test{
 
@@ -714,9 +715,87 @@ public class Test{
 }
 ```
 
+## 补充
+
+### 适配器
+
+```java
+package org.homework;
+
+public class Coumputer {
+    public void UseDevice(Usb u){
+        u.run();
+    }
+}
+--------------------------------------------------------------
+package org.homework;
+
+public class Demo {
+    public static void main(String[] args) {
+        Coumputer c = new Coumputer();
+        c.UseDevice(new PuErJi());
+    }
+}
+--------------------------------------------------------------
+
+package org.homework;
+
+
+public class GaoErJi extends ShiPei {
+    @Override
+    public void speak() {
+        System.out.println("正在说话");
+    }
+
+    @Override
+    public void hear() {
+        System.out.println("正在录音");
+    }
+}
+
+--------------------------------------------------------------
+
+package org.homework;
+
+public class PuErJi implements Usb{
+
+    @Override
+    public void run() {
+        System.out.println("耳机外放");
+    }
+}
+
+--------------------------------------------------------------
+package org.homework;
+
+public abstract class ShiPei implements Usb{
+    @Override
+    public void run() {
+        speak();
+        hear();
+    }
+    abstract public void speak();
+    abstract public void hear();
+}
+
+--------------------------------------------------------------
+
+package org.homework;
+
+public interface Usb {
+    void run();
+}
 
 
 
+```
+
+### lambda表达式
+
+```java
+
+(int a)->{System.out.println("asdjfh");}
+```
 
 
 
