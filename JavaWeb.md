@@ -217,8 +217,44 @@ public class HelloServlet extends HttpServlet {
 ```
 
 
-### Servlet 原理
+### Mapping
+一个Servlet可以指定一个映射路径
 
-Servlet是由Web服务器调用，web服务器再收到浏览器请求后
+一个Servlet可以指定多个路径
+
+一个Servlet可以指定同用映射路径
+
+```xml
+<servlet-name>hello</servlet-name>
+<url-pattern>/hello/*</url-pattern>
+```
+
+默认请路径
+
+```xml
+<servlet-name>hello</servlet-name>
+<url-pattern>/*</url-pattern>
+```
+
+指定一些后缀或者前缀等等
+
+ ### servletcontext
+
+ Web容器在启动的时候
+ 会为每一个Web程序都创建一个对应的ServletContext对象
+ 它代表了当前的web应用
+* 共享数据
+  在这个Servlet中的数据可以在另一个Servlet中获取
+  ```java
+  ServletContext context = this.getServletContext();
+  String username = (String) context.getAttribute("username");
+  //username在另一个Servlet中setAttribute设置
+
+  resp.setContextType("text/html");
+  resp.setcharacterEncoding("utf-8");
+  resp,getWriter().print("名字"+ username);
+  ```
+
+
 
 
