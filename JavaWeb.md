@@ -143,7 +143,82 @@ Https： 安全的
 
 #### 响应体
 
+## Servlet
+
+* Servlet 是sun公司开发动态web的一项技术
+* Sun再这些API中提供一个接口就是Servlet
+  * 编写一个类实现Servlet接口
+  * 把开发好的Java类部署到Web服务器中
+  
+  把实现了Servlet接口的Java程序就是Servlet
+### Maven环境优化
+
+修改web.xml为最新
+将maven的结构搭建完整
+
+### 编写Servlet
+
+直接继承HttpServlet
+
+```java
+package com.zerui.servlet;
 
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class HelloServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        
+        PrintWriter writer = resp.getWriter();
+        
+        writer.println("Hello Servlet");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+
+```
+
+### 编写Servlet的映射
+
+我们写的是Java程序，但是要通过浏览器访问
+而浏览器需要链接web服务器
+所以我们需要在web服务中注册我们写的Servet
+还要给一个浏览器能够访问的路径
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0"
+         metadata-complete="true">
+<!--注册servlet-->
+    <servlet>
+        <servlet-name>hello</servlet-name>
+        <servlet-class>com.zerui.servlet.HelloServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>hello</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+</web-app>
+```
+
+
+### Servlet 原理
+
+Servlet是由Web服务器调用，web服务器再收到浏览器请求后
 
 
